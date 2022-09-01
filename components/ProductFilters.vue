@@ -1,9 +1,25 @@
 <script setup>
+import { debouncedWatch, refDebounced } from '@vueuse/shared';
+
 const productStore = useProductStore();
 const filters = computed(() => productStore.filters);
+
+const loading = ref(false)
+const loadingDebounced = refDebounced(loading, 200)
+
+debouncedWatch(filters, async () => {
+  loading.value = true;
+  useRouter().push({ query: filters.value });
+  await productStore.fetchProducts();
+  loading.value = false;
+}, {
+  deep: true,
+  debouce: 200
+});
 </script>
 <template>
   <div class="filters-wrapper flex gap-2 items-center">
+    <AppSpinner size="md" color="blue" v-if="loadingDebounced" />
     <div class="form-control">
       <label class="label" for="search">
         <span class="label-text">Search</span>
