@@ -1,5 +1,4 @@
 <script setup>
-const router = useRouter();
 const alerts = useAlertsStore();
 definePageMeta({
   layout: "form-focus",

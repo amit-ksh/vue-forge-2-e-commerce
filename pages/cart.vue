@@ -13,7 +13,7 @@ async function handleCheckout() {
     <div class="md:flex w-full">
       <div class="md:w-3/4">
         <!-- Display an empty cart -->
-        <div v-if="!cartStore.items.length"  class="italic text-center pt-10">
+        <div v-if="!cartStore.products.length"  class="italic text-center pt-10">
           Cart is empty!
         </div>
         <div v-else class="overflow-x-auto">
@@ -35,7 +35,7 @@ async function handleCheckout() {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="item in cartStore.items" :key="item.sys.id">
+                <tr v-for="product in cartStore.products" :key="product.sys.id">
                   <th>
                     <label>
                       <input
@@ -43,7 +43,7 @@ async function handleCheckout() {
                         type="checkbox"
                         class="checkbox"
                         @change="checkAll.checked = true"
-                        :value="item.sys.id"
+                        :value="product.sys.id"
                       />
                     </label>
                   </th>
@@ -52,8 +52,8 @@ async function handleCheckout() {
                       <div class="avatar">
                         <div class="mask mask-squircle w-12 h-12">
                           <img
-                            :src="item.fields.image[0]?.fields.file.url"
-                            :alt="item.fields.name"
+                            :src="product.fields.image[0]?.fields.file.url"
+                            :alt="product.fields.name"
                           />
                         </div>
                       </div>
@@ -61,26 +61,26 @@ async function handleCheckout() {
                   </td>
                   <td>
                     <div class="font-bold">
-                      {{ item.fields.name }}
+                      {{ product.fields.name }}
                     </div>
-                    <ProductHeat :heat-level="item.fields.heatLevel" />
+                    <ProductHeat :heat-level="product.fields.heatLevel" />
                   </td>
                   <td>
-                    <ProductPrice :price="item.fields.price" />
+                    <ProductPrice :price="product.fields.price" />
                   </td>
 
                   <td>
                     <input
                       class="input input-bordered w-20"
                       type="number"
-                      v-model="item.amount"
+                      v-model="product.amount"
                     />
                   </td>
                   <th>
                     <NuxtLink
                       :to="{
                         name: 'products-id',
-                        params: { id: item.sys.id },
+                        params: { id: product.sys.id },
                       }"
                     >
                       <button class="btn btn-ghost btn-xs">details</button>

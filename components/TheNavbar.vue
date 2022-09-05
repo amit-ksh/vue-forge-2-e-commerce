@@ -15,13 +15,13 @@ const cartStore = useCartStore();
     <!-- Right Side -->
     <div class="flex-none">
       <div class="dropdown dropdown-end">
-        <CartIcon :loading="false" :count="cartStore.itemCount" />
+        <CartIcon :loading="cartStore.loading" :count="cartStore.productCount" />
         <div
           tabindex="0"
           class="mt-3 card card-compact dropdown-content w-52 bg-base-100 shadow"
         >
           <div class="card-body">
-            <span class="font-bold text-lg">{{ cartStore.itemCount }} Items</span>
+            <span class="font-bold text-lg">{{ cartStore.productCount }} Items</span>
             <span class="text-info">Subtotal: <ProductPrice :price="cartStore.subTotal" /></span>
             <div class="card-actions">
               <NuxtLink :to="{ name: 'cart' }">
