@@ -44,7 +44,7 @@ export function useDeskree() {
       const res = await $fetch("/auth/accounts/signup", {
         method: "POST",
         baseURL,
-        body: { email, password },
+        body: JSON.stringify({ email, password }),
       });
       const user = res.data;
 
@@ -104,23 +104,36 @@ export function useDeskree() {
       return loggedInUser.value;
     },
     async updateCart(products) {
+      /**
+       * RETURN:
+       * {
+       *  data: {
+       *    author: string,
+       *    createdAt: string,
+       *    products: "[{Product}]",
+       *    updatedAt: string,
+       *  }
+       * }
+       */
       if (!loggedInUser.value || !loggedInUser.value.cartId) return;
 
-      // persist user's cart data to Deskree here
-
-      // example of what the return from Deskree will look like
-      return {
-        data: {
-          author: "4xsOPtHHiSMI06OHT5gvDnwmLuo2",
-          createdAt: "2022-08-19T06:24:47-05:00",
-          products: JSON.parse("[]"),
-          updatedAt: "2022-08-22T11:03:07-05:00",
-        },
-      };
+      // persist user's cart data to Deskree
+      return dbRestRequest(
+        `/carts/${loggedInUser.value.cartId}`,
+        'PATCH',
+        {
+          products: JSON.stringify(products)
+        }
+      );
     },
     async getCart() {
-      // get the user's persisted cart from Deskree here
-      return [];
+      // get the user's persisted cart from Deskree 
+      if (!loggedInUser.value || !loggedInUser.value.cartId) return;
+
+      const res = await dbRestRequest(`/carts/${loggedInUser.value.cartId}`);
+      res.data.products = JSON.parse(res.data.products);
+
+      return res.data;
     },
   };
 
@@ -129,10 +142,23 @@ export function useDeskree() {
    */
   const reviews = {
     get(productId) {
-      // make request to get reviews for a product here
+      // get reviews for a product from deskree
+      const where = {
+        attribute: 'product_id',
+        operator: '=',
+        value: productId
+      };
+
+      return dbRestRequest(`/reviews?where=${JSON.stringify(where)}`);
     },
     submit({ text, rating, title, product_id }) {
-      // make request to add a new review here
+      // add a new product review to deskree
+      return dbRestRequest("/reviews", "POST", {
+        text,
+        rating: rating,
+        title,
+        product_id,
+      });
     },
   };
 
