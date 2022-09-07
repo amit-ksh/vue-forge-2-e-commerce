@@ -32,6 +32,10 @@ export const useCartStore = defineStore('CartStore', () => {
             (p) => !productIds.includes(p.sys.id)
         );
     }
+    
+    function reset() {
+      products.value = [];
+    }
 
   // TRIGGERS
   // init data
@@ -59,14 +63,15 @@ export const useCartStore = defineStore('CartStore', () => {
   );
 
     return {
-        products,
-        productCount,
-        subTotal,
-        taxTotal,
-        grandTotal,
-        loading,
-        removeProducts,
-        addProduct,
+      products,
+      productCount,
+      subTotal,
+      taxTotal,
+      grandTotal,
+      loading,
+      removeProducts,
+      addProduct,
+      reset
   };
 });
 
